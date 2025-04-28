@@ -89,7 +89,8 @@ export function nxViteTsPaths(options: nxViteTsPathsOptions = {}) {
             projectRootFromWorkspaceRoot,
             process.env.NX_TASK_TARGET_TARGET ?? 'build',
             'tsconfig.generated.json'
-          )
+          ),
+        projectRoot
       );
 
       if (!foundTsConfigPath) return;
@@ -150,7 +151,8 @@ export function nxViteTsPaths(options: nxViteTsPathsOptions = {}) {
       );
 
       const rootLevelTsConfig = getTsConfig(
-        join(workspaceRoot, 'tsconfig.base.json')
+        join(workspaceRoot, 'tsconfig.base.json'),
+        projectRoot
       );
       const rootLevelParsed = loadConfig(rootLevelTsConfig);
       logIt('fallback parsed tsconfig: ', rootLevelParsed);
@@ -209,9 +211,10 @@ export function nxViteTsPaths(options: nxViteTsPathsOptions = {}) {
     },
   } as Plugin;
 
-  function getTsConfig(preferredTsConfigPath: string): string {
+  function getTsConfig(preferredTsConfigPath: string, projectRoot: string): string {
     return [
       resolve(preferredTsConfigPath),
+      resolve(join(projectRoot, 'tsconfig.base.json')),
       resolve(join(workspaceRoot, 'tsconfig.base.json')),
       resolve(join(workspaceRoot, 'tsconfig.json')),
       resolve(join(workspaceRoot, 'jsconfig.json')),
